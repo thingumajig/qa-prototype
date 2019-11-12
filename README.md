@@ -1,2 +1,1 @@
-# qa-prototype
-qa prototype
+# question answering experiments

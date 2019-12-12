@@ -9,18 +9,19 @@ import numpy as np
 
 class ExtractiveSummary(object):
 
-  __slots__ = ['text', 'sentences', 'embeddings']
+  __slots__ = ['text', 'sentences', 'embeddings', 'sentence_encoder']
 
-  def __init__(self, text) -> None:
+  def __init__(self, text, sentence_encoder='universal-sentence-encoder-large/5') -> None:
     super().__init__()
     self.text = text
+    self.sentence_encoder = sentence_encoder
 
 
   def preprocess_text(self):
     self.sentences = get_sentences(self.text)
     print(f'Sentences:{len(self.sentences)}')
 
-    e = get_sentence_encoder()
+    e = get_sentence_encoder(self.sentence_encoder)
     # for s in self.sentences:
     #   self.embeddings +=[e.get_embedding_wo_session()]
     embs = e.get_embedding(self.sentences)

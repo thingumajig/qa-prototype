@@ -6,8 +6,10 @@ nlp = None
 def get_nlp():
   global nlp
   if nlp is None:
-    # nlp = spacy.load("en_core_web_sm")
-    nlp = spacy.load("venv\\Lib\\site-packages\\en_core_web_sm\\en_core_web_sm-2.2.5")
+    try:
+      nlp = spacy.load("en_core_web_sm")
+    except:
+      nlp = spacy.load("venv\\Lib\\site-packages\\en_core_web_sm\\en_core_web_sm-2.2.5")
 
     nlp.add_pipe(nlp.create_pipe('sentencizer'))
 

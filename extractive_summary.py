@@ -4,7 +4,7 @@
 from sklearn.cluster import Birch
 
 from text_utils import get_sentences
-from tfhub_utils import *
+from tfhubutils2 import *
 import numpy as np
 
 class ExtractiveSummary(object):
@@ -18,13 +18,14 @@ class ExtractiveSummary(object):
 
   def preprocess_text(self):
     self.sentences = get_sentences(self.text)
+    print(f'Sentences:{len(self.sentences)}')
+
     e = get_sentence_encoder()
     # for s in self.sentences:
     #   self.embeddings +=[e.get_embedding_wo_session()]
-    embs = e.get_embedding_wo_session(self.sentences)
+    embs = e.get_embedding(self.sentences)
     self.embeddings = list(embs)
 
-    print(f'Sentences:{len(self.sentences)}')
 
   def cluster_embeddings(self):
     bm = Birch(n_clusters=None)

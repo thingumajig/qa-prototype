@@ -4,12 +4,10 @@
 
 import tensorflow as tf
 import tensorflow_hub as hub
-import numpy as np
-import tf_sentencepiece
 
 class TFHubContext:
-
-  def __init__(self, url="https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/1") -> None:
+                         
+  def __init__(self, url="https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3") -> None:
     super().__init__()
     print("initialize graph.")
 
@@ -18,8 +16,9 @@ class TFHubContext:
     self.g = tf.Graph()
     with self.g.as_default():
       self.text_input = tf.placeholder(dtype=tf.string, shape=[None])
-      self.embed = hub.Module(url)
-      self.embedded_text = self.embed(self.text_input)
+      # self.model = hub.Module(url)
+      self.model = hub.load(url)
+      self.embedded_text = self.model(self.text_input)
       self.init_op = tf.group([tf.global_variables_initializer(), tf.tables_initializer()])
     self.g.finalize()
 
@@ -52,11 +51,9 @@ class TFHubContext:
     print('TFHubContext closed')
 
 
-class UniversalSentenceEncodeMultilingual:
-  default_context = None
+from functools import lru_cache
 
-  @static
-  def get():
-    if not default_context:
-      default_context = TFHubContext(url="https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/1")
-    return default_context
+@lru_cache(maxsize=10)
+def get_sentence_encoder(name='universal-sentence-encoder-multilingual-large/3'):
+  return TFHubContext(url=f'https://tfhub.dev/google/{name}')
+

@@ -3,7 +3,6 @@ from spacy.pipeline import SentenceSegmenter
 
 nlp = None
 
-
 def get_nlp():
   global nlp
   if nlp is None:

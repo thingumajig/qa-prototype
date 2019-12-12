@@ -38,7 +38,7 @@ if __name__=='__main__':
     for token in doc:
         print("{2}-{1}({3}-{6}, {0}-{5})".format(token.text, token.tag_, token.dep_, token.head.text, token.head.tag_, token.i+1, token.head.i+1))
     for np in doc.noun_chunks:
-    print(np.text)
+      print(np.text)
 
     # print('='*20)
     # for np in iter_nps(doc):

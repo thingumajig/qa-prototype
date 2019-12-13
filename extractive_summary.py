@@ -15,11 +15,12 @@ class ExtractiveSummary(object):
   def __init__(self, sentence_encoder_name='universal-sentence-encoder-large/5') -> None:
     super().__init__()
     self.sentence_encoder = get_sentence_encoder(sentence_encoder_name)
+    self.text = None
 
-  def preprocess_text(self, text):
-    text = text.strip()
-    if self.text != text:
-      self.text = text
+  def preprocess_text(self, t):
+    t = t.strip()
+    if self.text != t:
+      self.text = t
       self.sentences = get_sentences(self.text)
       print(f'Sentences:{len(self.sentences)}')
 
@@ -28,7 +29,7 @@ class ExtractiveSummary(object):
       embs = self.sentence_encoder.get_embedding(self.sentences)
       self.embeddings = np.array(embs).tolist()
 
-  def cluster_embeddings(self, threshold=0.4, min_cluster_elements=3, n_clusters = 0):
+  def cluster_embeddings(self, threshold=0.4, min_cluster_elements=3, n_clusters=0):
     if n_clusters == 0:
       n_clusters = None
 
@@ -69,18 +70,18 @@ class ExtractiveSummary(object):
     return selected_clusters
 
   @lru_cache(maxsize=4)
-  def get_extractive_texts(self, text, threshold=0.4, min_clusters_elements=3):
-    self.preprocess_text(text)
-    selected_clusters = self.cluster_embeddings(threshold, min_cluster_elements=min_clusters_elements)
+  def get_extractive_texts(self, t, threshold=0.4, min_clusters_elements=3, n_clusters=0, minimum_sentence_len=20):
+    self.preprocess_text(t)
+    selected_clusters = self.cluster_embeddings(threshold, min_cluster_elements=min_clusters_elements, n_clusters=n_clusters)
 
     selected_texts = []
     for s in selected_clusters:
       l = []
       for ns in s[1]:
-        if len(self.sentences[ns])>10:
+        if len(self.sentences[ns])>minimum_sentence_len:
           l.append(self.sentences[ns])
 
-      if len(l)>=min_clusters_elements:
+      if len(l) >= min_clusters_elements:
         selected_texts.append((s[0], l))
 
     return selected_texts

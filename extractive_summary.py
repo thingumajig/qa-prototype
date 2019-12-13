@@ -11,21 +11,20 @@ class ExtractiveSummary(object):
 
   __slots__ = ['text', 'sentences', 'embeddings', 'sentence_encoder']
 
-  def __init__(self, text, sentence_encoder='universal-sentence-encoder-large/5') -> None:
+  def __init__(self, text, sentence_encoder_name='universal-sentence-encoder-large/5') -> None:
     super().__init__()
     self.text = text
-    self.sentence_encoder = sentence_encoder
+    self.sentence_encoder = get_sentence_encoder(sentence_encoder_name)
 
 
   def preprocess_text(self):
     self.sentences = get_sentences(self.text)
     print(f'Sentences:{len(self.sentences)}')
 
-    e = get_sentence_encoder(self.sentence_encoder)
     # for s in self.sentences:
     #   self.embeddings +=[e.get_embedding_wo_session()]
-    embs = e.get_embedding(self.sentences)
-    self.embeddings = list(embs)
+    embs = self.sentence_encoder.get_embedding(self.sentences)
+    self.embeddings = np.array(embs).tolist()
 
 
   def cluster_embeddings(self):

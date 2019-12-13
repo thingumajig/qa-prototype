@@ -24,7 +24,7 @@ class TFHubContext2:
 
 from functools import lru_cache
 
-@lru_cache(maxsize=10)
+# @lru_cache(maxsize=10)
 # def get_sentence_encoder(name='universal-sentence-encoder-multilingual-large/3'):
 def get_sentence_encoder(name='universal-sentence-encoder-large/5'):
   return TFHubContext2(url=f'https://tfhub.dev/google/{name}')

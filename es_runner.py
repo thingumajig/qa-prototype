@@ -3,8 +3,11 @@
 import streamlit as st
 
 import extractive_summary as es
+import fancy_cache as fc
 
-e = es.get_extractive_summary_gen()
+@fc.fancy_cache(unique_to_session=True)
+def get_extractive_summary_gen():
+  return es.create_extractive_summary_gen()
 
 long_text = st.text_area('Text:')
 
@@ -15,8 +18,9 @@ min_sent_len = st.sidebar.slider('minimum sentence len:', min_value=1, step=1, m
 
 
 if long_text:
-  l = e.get_extractive_texts(long_text, threshold=threshold, min_clusters_elements=min_cluster_elements,
-                             n_clusters=n_themes, minimum_sentence_len=min_sent_len)
+  l = get_extractive_summary_gen().get_extractive_texts(long_text, threshold=threshold,
+                                                        min_clusters_elements=min_cluster_elements,
+                                                        n_clusters=n_themes, minimum_sentence_len=min_sent_len)
 
   if len(l)>0:
     st.subheader('Extactive summary:')

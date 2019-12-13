@@ -29,6 +29,7 @@ class ExtractiveSummary(object):
       embs = self.sentence_encoder.get_embedding(self.sentences)
       self.embeddings = np.array(embs).tolist()
 
+
   def cluster_embeddings(self, threshold=0.4, min_cluster_elements=3, n_clusters=0):
     if n_clusters == 0:
       n_clusters = None
@@ -87,8 +88,8 @@ class ExtractiveSummary(object):
     return selected_texts
 
 
-@lru_cache(maxsize=4)
-def get_extractive_summary_gen(emb_name='universal-sentence-encoder-multilingual-large/3'):
+
+def create_extractive_summary_gen(emb_name='universal-sentence-encoder-multilingual-large/3'):
 
   return ExtractiveSummary(sentence_encoder_name=emb_name)
 

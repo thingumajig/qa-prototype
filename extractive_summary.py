@@ -10,7 +10,7 @@ from functools import lru_cache
 
 
 class ExtractiveSummary(object):
-  __slots__ = ['text', 'sentences', 'embeddings', 'sentence_encoder']
+  __slots__ = ['text', 'sentences', 'embeddings', 'sentence_encoder', 'centroids']
 
   def __init__(self, sentence_encoder_name='universal-sentence-encoder-large/5') -> None:
     super().__init__()
@@ -40,8 +40,8 @@ class ExtractiveSummary(object):
 
     labels = bm.labels_
     print(f'labels: {labels} [{len(labels)}]')
-    centroids = bm.subcluster_centers_
-    print(f'centroids:  {len(centroids)} ')
+    self.centroids = bm.subcluster_centers_
+    print(f'centroids:  {len(self.centroids)} ')
     n_clusters = np.unique(labels).size
 
     print(f'n_clusters:{n_clusters}')
@@ -70,7 +70,7 @@ class ExtractiveSummary(object):
     #     print(es.sentences[sent])
     return selected_clusters
 
-  @lru_cache(maxsize=4)
+  @lru_cache(maxsize=15)
   def get_extractive_texts(self, t, threshold=0.4, min_clusters_elements=3, n_clusters=0, minimum_sentence_len=20):
     self.preprocess_text(t)
     selected_clusters = self.cluster_embeddings(threshold, min_cluster_elements=min_clusters_elements, n_clusters=n_clusters)
@@ -86,6 +86,47 @@ class ExtractiveSummary(object):
         selected_texts.append((s[0], l))
 
     return selected_texts
+
+  def get_cluster_naming(self, selected_texts, max_naming_len = 30):
+    from parser_utils import iter_nps_str, get_parser_nlp
+    from scipy.spatial import distance
+
+    print(f'= Generate Naming {"="*20}')
+
+    names = dict()
+    for x in selected_texts:
+      centroid_ix = x[0]
+      print(f'centroid idx: {centroid_ix}')
+      sents = x[1]
+      ngs = set()
+      for s in sents:
+        ss = get_parser_nlp()(s)
+        for spart in iter_nps_str(ss):
+          print(f'phrase:{spart} : {len(spart)}')
+          if len(spart)<=max_naming_len:
+            ngs.add(spart)
+
+      ngs = list(ngs)
+      nes = self.sentence_encoder.get_embedding(ngs)
+      nes = np.array(nes).tolist()
+      centroid = self.centroids[centroid_ix]
+
+      print(f'\tGenerated phrases: {ngs}')
+
+      #argmin
+      min_d = 100.  
+      min_s = None
+      for s, v in zip(ngs, nes):
+        d = distance.cosine(v,centroid)
+        print(f'\t\t{s} : {d}')
+        if d < min_d:
+          min_d = d
+          min_s = s
+
+      names[centroid_ix] = min_s
+      print(f'\tSelected phrase: {min_s}')
+
+    return names
 
 
 

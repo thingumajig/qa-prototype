@@ -6,6 +6,13 @@ import tensorflow.compat.v2 as tf
 import tensorflow_hub as hub
 from tensorflow_text import SentencepieceTokenizer
 
+import tensorflow as tf
+if tf.test.gpu_device_name():
+    print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
+else:
+    print("Please install GPU version of TF")
+
+
 class TFHubContext2:
                          
   def __init__(self, url="https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3") -> None:

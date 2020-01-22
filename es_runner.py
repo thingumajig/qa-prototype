@@ -25,9 +25,9 @@ def get_extractive_summary_gen():
 
 long_text = st.text_area('Text:')
 
-threshold = st.sidebar.slider('threshold:', min_value=0.1, step=0.01, max_value=1., value=0.5)
+threshold = st.sidebar.slider('threshold:', min_value=0.1, step=0.01, max_value=1., value=0.71)
 n_themes = st.sidebar.slider('themes:', min_value=0, step=1, max_value=100, value=0)
-min_cluster_elements = st.sidebar.slider('minimum theme sentences:', min_value=1, step=1, max_value=10, value=2)
+min_cluster_elements = st.sidebar.slider('minimum theme sentences:', min_value=1, step=1, max_value=10, value=3)
 min_sent_len = st.sidebar.slider('minimum sentence len:', min_value=1, step=1, max_value=300, value=20)
 max_naming_len = st.sidebar.slider('maximum name len:', min_value=10, step=1, max_value=300, value=30)
 

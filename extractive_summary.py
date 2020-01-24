@@ -10,12 +10,13 @@ from functools import lru_cache
 
 
 class ExtractiveSummary(object):
-  __slots__ = ['text', 'sentences', 'embeddings', 'sentence_encoder', 'centroids']
+  __slots__ = ['text', 'sentences', 'embeddings', 'sentence_encoder', 'centroids', 'lang']
 
-  def __init__(self, sentence_encoder_name='universal-sentence-encoder-large/5') -> None:
+  def __init__(self, sentence_encoder_name='universal-sentence-encoder-large/5', lang = 'en') -> None:
     super().__init__()
     self.sentence_encoder = get_sentence_encoder(sentence_encoder_name)
     self.text = None
+    self.lang = lang
 
   def preprocess_text(self, t):
     t = t.strip()
@@ -130,9 +131,9 @@ class ExtractiveSummary(object):
 
 
 
-def create_extractive_summary_gen(emb_name='universal-sentence-encoder-multilingual-large/3'):
+def create_extractive_summary_gen(emb_name='universal-sentence-encoder-multilingual-large/3', lang = 'en'):
 
-  return ExtractiveSummary(sentence_encoder_name=emb_name)
+  return ExtractiveSummary(sentence_encoder_name=emb_name, lang = lang)
 
 
 if __name__ == '__main__':

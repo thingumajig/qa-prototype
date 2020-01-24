@@ -4,13 +4,17 @@
 
 import spacy
 from spacy.symbols import *
+from udipe_utils import get_udpipe_parser
 
 #Globals
 parser_nlp = None
 
-def get_parser_nlp():
+def get_parser_nlp(lang='en'):
   global parser_nlp
-  if parser_nlp is None:
+
+  if lang != 'en':
+    return get_udpipe_parser(lang)
+  elif parser_nlp is None:
     try:
       parser_nlp = spacy.load("en_core_web_sm")
     except:

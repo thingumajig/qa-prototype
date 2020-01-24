@@ -20,8 +20,8 @@ import fancy_cache as fc
 
 
 @fc.fancy_cache(unique_to_session=True,allow_output_mutation=True)
-def get_extractive_summary_gen():
-  return es.create_extractive_summary_gen()
+def get_extractive_summary_gen(lang='en'):
+  return es.create_extractive_summary_gen(lang=lang)
 
 long_text = st.text_area('Text:')
 
@@ -30,10 +30,14 @@ n_themes = st.sidebar.slider('themes:', min_value=0, step=1, max_value=100, valu
 min_cluster_elements = st.sidebar.slider('minimum theme sentences:', min_value=1, step=1, max_value=10, value=3)
 min_sent_len = st.sidebar.slider('minimum sentence len:', min_value=1, step=1, max_value=300, value=20)
 max_naming_len = st.sidebar.slider('maximum name len:', min_value=10, step=1, max_value=300, value=30)
-
+st.sidebar.write(f'<hr>', unsafe_allow_html=True)
+rus=st.sidebar.checkbox('Lang:ru', False)
 
 if long_text:
-  gen = get_extractive_summary_gen()
+  lang = 'ru' if rus else 'en'
+
+
+  gen = get_extractive_summary_gen(lang=lang)
   l = gen.get_extractive_texts(long_text, threshold=threshold,
                                min_clusters_elements=min_cluster_elements,
                                n_clusters=n_themes, minimum_sentence_len=min_sent_len)

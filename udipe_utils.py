@@ -9,9 +9,25 @@ from spacy.symbols import *
 
 import nltk_tree as ntree
 
-spacy_udpipe.download("ru") # download Russian model
-nlp = spacy_udpipe.load("ru")
-# nlp.add_pipe(nlp.create_pipe('sentencizer'))
+udpipe_nlp = dict()
+
+def get_udpipe_parser(lang='ru'):
+  global udpipe_nlp
+  if udpipe_nlp.get(lang, None) is None:
+    try:
+
+      spacy_udpipe.download(lang)  # download Russian model
+
+      udpipe_nlp[lang] = spacy_udpipe.load("ru")
+      # nlp.add_pipe(nlp.create_pipe('sentencizer'))
+
+    except:
+      print(f'error loading udpipe model for {lang}')
+
+    # parser_nlp.add_pipe(parser_nlp.create_pipe('sentencizer'))
+
+  return udpipe_nlp[lang]
+
 
 
 
@@ -59,7 +75,7 @@ if __name__ == '__main__':
   s2 = 'утверждение сделок с имуществом'
   s3 = 'одобрение сделок за исключением сделок с недвижимостью'
 
-  doc = nlp(text, disable=['ner'])
+  doc = get_udpipe_parser()(text, disable=['ner'])
 
   print('Sentences:' + '=' * 10)
   for sent in doc.sents:

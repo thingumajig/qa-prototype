@@ -30,7 +30,7 @@ n_themes = st.sidebar.slider('themes:', min_value=0, step=1, max_value=100, valu
 min_cluster_elements = st.sidebar.slider('minimum theme sentences:', min_value=1, step=1, max_value=10, value=3)
 min_sent_len = st.sidebar.slider('minimum sentence len:', min_value=1, step=1, max_value=300, value=20)
 max_naming_len = st.sidebar.slider('maximum name len:', min_value=10, step=1, max_value=300, value=30)
-st.sidebar.write(f'<hr>', unsafe_allow_html=True)
+# st.sidebar.write(f'<hr>', unsafe_allow_html=True)
 rus=st.sidebar.checkbox('Lang:ru', False)
 
 if long_text:
@@ -47,7 +47,10 @@ if long_text:
 
     st.subheader('Extactive summary:')
     for theme in l:
-      st.subheader(f'Theme: {namings[theme[0]].title()}')
+      if namings[theme[0]]:
+        st.subheader(f'Theme: {namings[theme[0]].title()}')
+      else:
+        st.subheader(f'Theme:')
       for sent in theme[1]:
         st.write(sent)
       st.write(f'<hr>', unsafe_allow_html=True)

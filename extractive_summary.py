@@ -27,7 +27,9 @@ class ExtractiveSummary(object):
 
       # for s in self.sentences:
       #   self.embeddings +=[e.get_embedding_wo_session()]
+
       embs = self.sentence_encoder.get_embedding(self.sentences)
+
       self.embeddings = np.array(embs).tolist()
 
 
@@ -89,10 +91,19 @@ class ExtractiveSummary(object):
     return selected_texts
 
   def get_cluster_naming(self, selected_texts, max_naming_len = 30):
+    print(f'= Generate Naming {"="*20}')
+
+
     from parser_utils import iter_nps_str, get_parser_nlp
     from scipy.spatial import distance
 
-    print(f'= Generate Naming {"="*20}')
+    # select language concept segmenter
+    ng_iter = iter_nps_str
+    if self.lang == 'ru':
+      import udipe_utils as udpu
+      ng_iter = udpu.upp_iter_nps_str
+
+
 
     names = dict()
     for x in selected_texts:
@@ -101,8 +112,11 @@ class ExtractiveSummary(object):
       sents = x[1]
       ngs = set()
       for s in sents:
-        ss = get_parser_nlp()(s)
-        for spart in iter_nps_str(ss):
+        ss = get_parser_nlp(lang=self.lang)(s)
+
+
+
+        for spart in ng_iter(ss):
           print(f'phrase:{spart} : {len(spart)}')
           if len(spart)<=max_naming_len:
             ngs.add(spart)
@@ -117,9 +131,11 @@ class ExtractiveSummary(object):
       #argmin
       min_d = 100.  
       min_s = None
+      phrases_list = []
       for s, v in zip(ngs, nes):
         d = distance.cosine(v,centroid)
         print(f'\t\t{s} : {d}')
+        phrases_list.append((s,d))
         if d < min_d:
           min_d = d
           min_s = s

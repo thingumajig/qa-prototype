@@ -43,7 +43,7 @@ def iter_nps(doc):
 exclude_labels = {nmod, acl}
 
 
-def iter_nps_str(doc):
+def upp_iter_nps_str(doc):
   s = ''
   for np in iter_nps(doc):
 
@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
   print('=' * 20)
 
-  for np in iter_nps_str(doc):
+  for np in upp_iter_nps_str(doc):
     print(np)
 
 

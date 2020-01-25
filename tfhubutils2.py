@@ -7,6 +7,10 @@ import tensorflow_hub as hub
 from tensorflow_text import SentencepieceTokenizer
 
 import tensorflow as tf
+
+from functools import lru_cache
+
+
 if tf.test.gpu_device_name():
     print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
 else:
@@ -21,6 +25,7 @@ class TFHubContext2:
 
     self.model = hub.load(url)
 
+  @lru_cache(maxsize=512)
   def get_embedding(self, texts):
     # Reduce logging output.
     # tf.logging.set_verbosity(tf.logging.ERROR)

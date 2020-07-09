@@ -10,7 +10,6 @@ import tensorflow as tf
 
 from functools import lru_cache
 
-
 if tf.test.gpu_device_name():
     print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
 else:
@@ -18,28 +17,30 @@ else:
 
 
 class TFHubContext2:
-                         
-  def __init__(self, url="https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3") -> None:
-    super().__init__()
-    print("initialize model.")
+    def __init__(
+        self,
+        url="https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3"
+    ) -> None:
+        super().__init__()
+        print("initialize model.")
 
-    self.model = hub.load(url)
+        self.model = hub.load(url)
 
-  @lru_cache(maxsize=512)
-  def get_embedding(self, texts):
-    # Reduce logging output.
-    # tf.logging.set_verbosity(tf.logging.ERROR)
+    @lru_cache(maxsize=512)
+    def get_embedding(self, texts):
+        # Reduce logging output.
+        # tf.logging.set_verbosity(tf.logging.ERROR)
 
-    return self.model(texts)
+        return self.model(texts)
 
-  def close(self):
-    print('TFHubContext closed')
+    def close(self):
+        print('TFHubContext closed')
 
 
 from functools import lru_cache
 
+
 @lru_cache(maxsize=10)
 # def get_sentence_encoder(name='universal-sentence-encoder-multilingual-large/3'):
 def get_sentence_encoder(name='universal-sentence-encoder-large/5'):
-  return TFHubContext2(url=f'https://tfhub.dev/google/{name}')
-
+    return TFHubContext2(url=f'https://tfhub.dev/google/{name}')
